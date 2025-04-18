@@ -1,0 +1,72 @@
+# Guildnet Main Configuration File
+
+general:
+  system_name: "Guildnet"
+  version: "1.0.0"
+  environment: "development"  
+  timezone: "UTC"
+
+network:
+  node_discovery: true
+  max_nodes: 1000000
+  enable_ipv6: false
+  communication_protocol: "grpc"
+  heartbeat_interval_sec: 15
+  max_latency_ms: 250
+
+nodes:
+  auto_register: true
+  max_failures_before_blacklist: 3
+  gpu_required: false
+  cpu_architecture: ["x86_64", "arm64"]
+  supported_vendors: ["NVIDIA", "AMD", "Intel"]
+
+scheduler:
+  algorithm: "priority-weighted"  # Options: round-robin, priority-weighted, resource-aware
+  fallback_strategy: "retry-another-node"
+  max_retry_count: 5
+  task_timeout_sec: 3600
+
+load_balancing:
+  enabled: true
+  method: "least-loaded"  # Options: least-loaded, random, round-robin
+  refresh_interval_sec: 10
+  load_threshold: 85  # % CPU/GPU usage
+
+security:
+  auth_required: true
+  encryption: true
+  tls_cert_path: "/etc/guildnet/tls/server.crt"
+  tls_key_path: "/etc/guildnet/tls/server.key"
+  firewall:
+    enabled: true
+    allow_ports: [443, 8080, 9000]
+    deny_ips: []
+
+monitoring:
+  enable_node_health_check: true
+  health_check_interval_sec: 30
+  alert_thresholds:
+    cpu: 95
+    memory: 90
+    gpu: 90
+  webhook_alerts:
+    enabled: true
+    url: "https://your-monitoring-service.com/alert"
+
+logging:
+  level: "info"  # Options: debug, info, warning, error
+  file: "/var/log/guildnet/system.log"
+  rotate_interval_days: 7
+  max_log_size_mb: 50
+
+backup:
+  enabled: true
+  interval_hours: 6
+  destination_path: "/var/guildnet/backups"
+  retain_copies: 5
+
+metadata:
+  model_registry_path: "/guildnet/models/"
+  node_metadata_path: "/guildnet/nodes/"
+  task_history_path: "/guildnet/tasks/"
